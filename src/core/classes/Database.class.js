@@ -6,7 +6,6 @@ var Database = /** @class */ (function () {
     function Database(_config) {
         if (_config === void 0) { _config = firebase_config_1.firebaseConfig; }
         this._config = _config;
-        this.init();
     }
     Object.defineProperty(Database.prototype, "config", {
         set: function (config) {
@@ -17,17 +16,16 @@ var Database = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Database.prototype.get = function (route) {
-        return this._database.ref(route);
+    Database.prototype.ref = function (path) {
+        return this._database.ref(path);
     };
-    Database.prototype.init = function () {
+    Database.prototype.set = function (path, body) {
+        return this.ref(path).set(body);
+    };
+    Database.prototype.signIn = function (login, password) {
         var app = firebase_1.initializeApp(this._config);
         this._database = app.database();
-        firebase_1.auth(app).signInWithEmailAndPassword(firebase_config_1.login, firebase_config_1.password)
-            .then(function (res) {
-            console.log(res);
-        });
-        return this;
+        return firebase_1.auth(app).signInWithEmailAndPassword(login, password);
     };
     return Database;
 }());

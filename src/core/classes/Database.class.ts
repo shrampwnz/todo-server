@@ -1,4 +1,4 @@
-import { initializeApp, auth, app, database } from 'firebase';
+import { initializeApp, auth, database } from 'firebase';
 import { DatabaseConfig } from '../interfaces/DatabaseConfig.interface';
 import { firebaseConfig, login, password } from '../../configs/firebase.config';
 
@@ -11,23 +11,20 @@ export class Database {
     }
   }
 
-  constructor(private _config: DatabaseConfig = firebaseConfig) {
-    this.init();
+  constructor(private _config: DatabaseConfig = firebaseConfig) { }
+
+  public ref(path: string): database.Reference {
+    return this._database.ref(path);
   }
 
-  public get(route: string): database.Reference {
-    return this._database.ref(route);
+  public set(path: string, body: any): Promise<any> {
+    return this.ref(path).set(body);
   }
 
-  private init(): Database {
+  public signIn(login: string, password: string): Promise<auth.UserCredential> {
     const app = initializeApp(this._config);
     this._database = app.database();
 
-    auth(app).signInWithEmailAndPassword(login, password)
-      .then((res) => {
-        console.log(res);
-      });
-
-    return this;
+    return auth(app).signInWithEmailAndPassword(login, password);
   }
 }
