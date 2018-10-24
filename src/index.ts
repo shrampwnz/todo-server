@@ -3,11 +3,11 @@ import * as express from 'express';
 import { Database } from './core/classes/Database.class';
 
 const app = express();
-const database = new Database().init();
+const database = new Database();
 
 app.get('/info', (request, response) => {
-  database.get(
-    'info',
+  database.get('info').on(
+    'value',
     snapshot => {
       response.end(JSON.stringify(snapshot.val()));
     },

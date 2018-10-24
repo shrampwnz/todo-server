@@ -3,8 +3,6 @@ import { DatabaseConfig } from '../interfaces/DatabaseConfig.interface';
 import { firebaseConfig, login, password } from '../../configs/firebase.config';
 
 export class Database {
-  private _config = firebaseConfig;
-
   private _database: database.Database;
 
   public set config(config: DatabaseConfig) {
@@ -13,13 +11,15 @@ export class Database {
     }
   }
 
-  constructor(config: DatabaseConfig = null) {
-    if (config) {
-      this._config = config;
-    }
+  constructor(private _config: DatabaseConfig = firebaseConfig) {
+    this.init();
   }
 
-  public init(): Database {
+  public get(route: string): database.Reference {
+    return this._database.ref(route);
+  }
+
+  private init(): Database {
     const app = initializeApp(this._config);
     this._database = app.database();
 
@@ -29,9 +29,5 @@ export class Database {
       });
 
     return this;
-  }
-
-  public get(route: string, callback: any, errorHandler?: any): any {
-    return this._database.ref(route).on('value', callback);
   }
 }
