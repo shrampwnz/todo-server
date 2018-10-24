@@ -1,13 +1,9 @@
-import { firebaseURL, firebaseAuthDomain, firebaseAPIKey, login, password } from '../../constants';
 import { initializeApp, auth, app, database } from 'firebase';
 import { DatabaseConfig } from '../interfaces/DatabaseConfig.interface';
+import { firebaseConfig, login, password } from '../../configs/firebase.config';
 
 export class Database {
-  private _config = {
-    apiKey: firebaseAPIKey,
-    authDomain: firebaseAuthDomain,
-    databaseURL: firebaseURL
-  } as DatabaseConfig;
+  private _config = firebaseConfig;
 
   private _database: database.Database;
 
