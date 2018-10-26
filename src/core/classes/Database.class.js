@@ -6,11 +6,13 @@ var Database = /** @class */ (function () {
     function Database(_config) {
         if (_config === void 0) { _config = firebase_config_1.firebaseConfig; }
         this._config = _config;
+        this.init();
     }
     Object.defineProperty(Database.prototype, "config", {
         set: function (config) {
             if (config) {
                 this._config = config;
+                this.init();
             }
         },
         enumerable: true,
@@ -23,9 +25,11 @@ var Database = /** @class */ (function () {
         return this.ref(path).set(body);
     };
     Database.prototype.signIn = function (login, password) {
-        var app = firebase_1.initializeApp(this._config);
-        this._database = app.database();
-        return firebase_1.auth(app).signInWithEmailAndPassword(login, password);
+        return firebase_1.auth(this._app).signInWithEmailAndPassword(login, password);
+    };
+    Database.prototype.init = function () {
+        this._app = firebase_1.initializeApp(this._config);
+        this._database = this._app.database();
     };
     return Database;
 }());
