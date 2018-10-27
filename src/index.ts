@@ -1,7 +1,6 @@
 import { PORT } from './constants';
 import * as express from 'express';
 import { Database } from './core/classes/Database.class';
-import { IncomingMessage, ServerResponse } from 'http';
 import * as bodyParser from 'body-parser';
 import { IRequest } from './core/interfaces/IRequest.interface';
 import { IResponse } from './core/interfaces/IResponse.interface';
@@ -14,7 +13,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 })); 
 
-app.get('/users', (request: IncomingMessage, response: ServerResponse) => {
+app.get('/users', (request: IRequest, response: IResponse) => {
   database.ref('users').on(
     'value',
     snapshot => {
@@ -24,6 +23,17 @@ app.get('/users', (request: IncomingMessage, response: ServerResponse) => {
       console.log('The read failed: ' + errorObject.code);
     }
   );
+});
+
+app.get('/todos', async (request: IRequest, response: IResponse) => {
+  const id = request.query.id;
+
+  try {
+    const snapshot = await database.ref(`users-todos/${id}`).once('value');
+    response.end(JSON.stringify(snapshot.val()));
+  } catch (error) {
+    console.log('The read failed: ' + error.code);
+  }
 });
 
 app.post('/login', async (request: IRequest, response: IResponse) => {
