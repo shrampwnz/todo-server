@@ -4,7 +4,7 @@
   "description": "server side of todo app",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec \"tsc -p tsconfig.json && node --inspect src/index.js\" --watch src -e ts"
+    "start": "nodemon --exec \"tsc -p tsconfig.json && node --inspect dist/index.js\" --watch src -e ts"
   },
   "author": "Yan Koshelev",
   "license": "MIT",
