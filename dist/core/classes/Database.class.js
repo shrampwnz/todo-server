@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var firebase_1 = require("firebase");
 var firebase_config_1 = require("../../configs/firebase.config");
 var Database = /** @class */ (function () {
@@ -34,3 +34,4 @@ var Database = /** @class */ (function () {
     return Database;
 }());
 exports.Database = Database;
+//# sourceMappingURL=Database.class.js.map

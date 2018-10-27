@@ -26,14 +26,15 @@ app.get('/users', (request: IncomingMessage, response: ServerResponse) => {
   );
 });
 
-app.post('/login', (request: IRequest, response: IResponse) => {
+app.post('/login', async (request: IRequest, response: IResponse) => {
   const { login, password } = request.body;
 
-  database.signIn(login, password)
-    .then(
-      () => response.send({ message: 'Success' }),
-      (e) => response.send(e)
-    );
+  try {
+    await database.signIn(login, password);
+    response.send({ isSuccess: true });
+  } catch (error) {
+    response.send(error);
+  }
 })
 
 app.listen(PORT, () => {
