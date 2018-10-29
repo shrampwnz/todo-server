@@ -1,6 +1,6 @@
 import { IncomingMessage } from 'http';
 
-export interface IRequest extends IncomingMessage {
+export interface Request extends IncomingMessage {
   body: any;
   query: any;
 }

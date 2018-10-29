@@ -1,5 +1,5 @@
 import { ServerResponse } from 'http';
 
-export interface IResponse extends ServerResponse {
+export interface Response extends ServerResponse {
   send: any;
 }

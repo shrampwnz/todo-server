@@ -2,8 +2,8 @@ import { PORT } from './constants';
 import * as express from 'express';
 import { Database } from './core/classes/Database.class';
 import * as bodyParser from 'body-parser';
-import { IRequest } from './core/interfaces/IRequest.interface';
-import { IResponse } from './core/interfaces/IResponse.interface';
+import { Request } from './core/interfaces/Request.interface';
+import { Response } from './core/interfaces/Response.interface';
 
 const app = express();
 const database = new Database();
@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 })); 
 
-app.get('/users', (request: IRequest, response: IResponse) => {
+app.get('/users', (request: Request, response: Response) => {
   database.ref('users').on(
     'value',
     snapshot => {
@@ -25,7 +25,7 @@ app.get('/users', (request: IRequest, response: IResponse) => {
   );
 });
 
-app.get('/todos', async (request: IRequest, response: IResponse) => {
+app.get('/todos', async (request: Request, response: Response) => {
   const id = request.query.id;
 
   try {
@@ -36,7 +36,7 @@ app.get('/todos', async (request: IRequest, response: IResponse) => {
   }
 });
 
-app.post('/login', async (request: IRequest, response: IResponse) => {
+app.post('/login', async (request: Request, response: Response) => {
   const { login, password } = request.body;
 
   try {
