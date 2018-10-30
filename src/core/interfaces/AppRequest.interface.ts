@@ -1,6 +1,6 @@
 import { IncomingMessage } from 'http';
 
-export interface Request extends IncomingMessage {
+export interface AppRequest extends IncomingMessage {
   body: any;
   query: any;
 }

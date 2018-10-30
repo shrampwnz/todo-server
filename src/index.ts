@@ -2,8 +2,9 @@ import { PORT } from './constants';
 import * as express from 'express';
 import { Database } from './core/classes/Database.class';
 import * as bodyParser from 'body-parser';
-import { Request } from './core/interfaces/Request.interface';
-import { Response } from './core/interfaces/Response.interface';
+import { getTodos } from './core/utils/database.utils';
+import { AppResponse } from './core/interfaces/AppResponse.interface';
+import { AppRequest } from './core/interfaces/AppRequest.interface';
 
 const app = express();
 const database = new Database();
@@ -13,7 +14,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 })); 
 
-app.get('/users', (request: Request, response: Response) => {
+app.get('/users', (request: AppRequest, response: AppResponse) => {
   database.ref('users').on(
     'value',
     snapshot => {
@@ -25,18 +26,16 @@ app.get('/users', (request: Request, response: Response) => {
   );
 });
 
-app.get('/todos', async (request: Request, response: Response) => {
-  const uid = database.auth.currentUser.uid;
-
+app.get('/todos', async (request: AppRequest, response: AppResponse) => {
   try {
-    const snapshot = await database.ref(`users-todos/${uid}`).once('value');
+    const snapshot = await getTodos(database);
     response.end(JSON.stringify(snapshot.val()));
   } catch (error) {
     console.log('The read failed: ' + error.code);
   }
 });
 
-app.post('/login', async (request: Request, response: Response) => {
+app.post('/login', async (request: AppRequest, response: AppResponse) => {
   const { login, password } = request.body;
 
   try {
@@ -47,15 +46,20 @@ app.post('/login', async (request: Request, response: Response) => {
   }
 })
 
-app.post('/add-task', (request: Request, response: Response) => {
+app.post('/add-task', async (request: AppRequest, response: AppResponse) => {
   const uid = database.auth.currentUser.uid;
   const data = request.body;
+  const snapshot = await getTodos(database);
 
-  database.ref(`/users-todos/${uid}`)
-    .push(data, (msg) => {
-      response.send(JSON.stringify(msg));
-      console.log(msg);
-    });
+  const list = snapshot.val();
+  console.log('list: ', list);
+
+  try {
+    const a = await database.ref(`/users-todos/${uid}`).set([...list, data]);
+    console.log('a: ', a);
+  } catch (error) {
+    console.log(`[ERROR] ${error}`);
+  }
 })
 
 app.listen(PORT, () => {
