@@ -26,10 +26,10 @@ app.get('/users', (request: Request, response: Response) => {
 });
 
 app.get('/todos', async (request: Request, response: Response) => {
-  const id = request.query.id;
+  const uid = database.auth.currentUser.uid;
 
   try {
-    const snapshot = await database.ref(`users-todos/${id}`).once('value');
+    const snapshot = await database.ref(`users-todos/${uid}`).once('value');
     response.end(JSON.stringify(snapshot.val()));
   } catch (error) {
     console.log('The read failed: ' + error.code);
@@ -45,6 +45,17 @@ app.post('/login', async (request: Request, response: Response) => {
   } catch (error) {
     response.send(error);
   }
+})
+
+app.post('/add-task', (request: Request, response: Response) => {
+  const uid = database.auth.currentUser.uid;
+  const data = request.body;
+
+  database.ref(`/users-todos/${uid}`)
+    .push(data, (msg) => {
+      response.send(JSON.stringify(msg));
+      console.log(msg);
+    });
 })
 
 app.listen(PORT, () => {

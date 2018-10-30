@@ -13,6 +13,10 @@ export class Database {
     }
   }
 
+  public get auth(): auth.Auth {
+    return this._app.auth();
+  }
+
   constructor(private _config: DatabaseConfig = firebaseConfig) {
     this.init();
   }
