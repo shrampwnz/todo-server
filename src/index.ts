@@ -52,11 +52,9 @@ app.post('/add-task', async (request: AppRequest, response: AppResponse) => {
   const snapshot = await getTodos(database);
 
   const list = snapshot.val();
-  console.log('list: ', list);
 
   try {
-    const a = await database.ref(`/users-todos/${uid}`).set([...list, data]);
-    console.log('a: ', a);
+    await database.ref(`/users-todos/${uid}`).set([...list, data]);
   } catch (error) {
     console.log(`[ERROR] ${error}`);
   }
