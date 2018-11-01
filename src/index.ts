@@ -51,9 +51,36 @@ app.put('/add-task', async (request: AppRequest, response: AppResponse) => {
   const uid = database.auth.currentUser.uid;
   const data = request.body;
 
-
   try {
     await database.ref(`/users-todos/${uid}`).push(data);
+    const snapshot = await getTodos(database);
+
+    response.end(JSON.stringify(mapToItem(snapshot.val())));
+  } catch (error) {
+    console.log(`[ERROR] ${error}`);
+  }
+})
+
+app.put('/complete-task', async (request: AppRequest, response: AppResponse) => {
+  const uid = database.auth.currentUser.uid;
+  const { id, isComplete } = request.body;
+
+  try {
+    await database.ref(`/users-todos/${uid}`).child(id).update({ isComplete });
+    const snapshot = await getTodos(database);
+
+    response.end(JSON.stringify(mapToItem(snapshot.val())));
+  } catch (error) {
+    console.log(`[ERROR] ${error}`);
+  }
+})
+
+app.put('/remove-task', async (request: AppRequest, response: AppResponse) => {
+  const uid = database.auth.currentUser.uid;
+  const { id } = request.body;
+
+  try {
+    await database.ref(`/users-todos/${uid}`).child(id).remove();
     const snapshot = await getTodos(database);
 
     response.end(JSON.stringify(mapToItem(snapshot.val())));
