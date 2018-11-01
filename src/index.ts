@@ -47,7 +47,7 @@ app.post('/login', async (request: AppRequest, response: AppResponse) => {
   }
 })
 
-app.post('/add-task', async (request: AppRequest, response: AppResponse) => {
+app.put('/add-task', async (request: AppRequest, response: AppResponse) => {
   const uid = database.auth.currentUser.uid;
   const data = request.body;
 
