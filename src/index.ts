@@ -5,6 +5,7 @@ import * as bodyParser from 'body-parser';
 import { getTodos } from './core/utils/database.utils';
 import { AppResponse } from './core/interfaces/AppResponse.interface';
 import { AppRequest } from './core/interfaces/AppRequest.interface';
+import { mapToItem } from './core/utils/mappers.utils';
 
 const app = express();
 const database = new Database();
@@ -29,7 +30,7 @@ app.get('/users', (request: AppRequest, response: AppResponse) => {
 app.get('/todos', async (request: AppRequest, response: AppResponse) => {
   try {
     const snapshot = await getTodos(database);
-    response.end(JSON.stringify(snapshot.val()));
+    response.end(JSON.stringify(mapToItem(snapshot.val())));
   } catch (error) {
     console.log('The read failed: ' + error.code);
   }
@@ -49,12 +50,13 @@ app.post('/login', async (request: AppRequest, response: AppResponse) => {
 app.post('/add-task', async (request: AppRequest, response: AppResponse) => {
   const uid = database.auth.currentUser.uid;
   const data = request.body;
-  const snapshot = await getTodos(database);
 
-  const list = snapshot.val();
 
   try {
-    await database.ref(`/users-todos/${uid}`).set([...list, data]);
+    await database.ref(`/users-todos/${uid}`).push(data);
+    const snapshot = await getTodos(database);
+
+    response.end(JSON.stringify(mapToItem(snapshot.val())));
   } catch (error) {
     console.log(`[ERROR] ${error}`);
   }
