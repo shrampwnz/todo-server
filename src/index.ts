@@ -1,3 +1,4 @@
+import { requestBase } from './core/utils/base.utils';
 import { PORT } from './constants';
 import * as express from 'express';
 import { Database } from './core/classes/Database.class';
@@ -27,7 +28,7 @@ app.get('/users', (request: AppRequest, response: AppResponse) => {
 });
 
 app.get('/todos', async (request: AppRequest, response: AppResponse) => {
-  this.requestBase(
+  requestBase(
     request,
     response,
     getTodos(database)
@@ -49,11 +50,11 @@ app.put('/add-task', async (request: AppRequest, response: AppResponse) => {
   const uid = database.auth.currentUser.uid;
   const data = request.body;
 
-  this.requestBase(
+  requestBase(
     request,
     response,
     getTodos(database),
-    database.ref(`/users-todos/${uid}`).push(data),
+    database.ref(`/users-todos/${uid}`).push(data)
   );
 })
 
@@ -61,7 +62,7 @@ app.put('/complete-task', async (request: AppRequest, response: AppResponse) => 
   const uid = database.auth.currentUser.uid;
   const { id, isComplete } = request.body;
 
-  this.requestBase(
+  requestBase(
     request,
     response,
     getTodos(database),
@@ -73,7 +74,7 @@ app.put('/remove-task', (request: AppRequest, response: AppResponse) => {
   const uid = database.auth.currentUser.uid;
   const { id } = request.body;
 
-  this.requestBase(
+  requestBase(
     request,
     response,
     getTodos(database),
