@@ -5,7 +5,6 @@ import * as bodyParser from 'body-parser';
 import { getTodos } from './core/utils/database.utils';
 import { AppResponse } from './core/interfaces/AppResponse.interface';
 import { AppRequest } from './core/interfaces/AppRequest.interface';
-import { mapToItem } from './core/utils/mappers.utils';
 
 const app = express();
 const database = new Database();
@@ -28,12 +27,11 @@ app.get('/users', (request: AppRequest, response: AppResponse) => {
 });
 
 app.get('/todos', async (request: AppRequest, response: AppResponse) => {
-  try {
-    const snapshot = await getTodos(database);
-    response.end(JSON.stringify(mapToItem(snapshot.val())));
-  } catch (error) {
-    console.log('The read failed: ' + error.code);
-  }
+  this.requestBase(
+    request,
+    response,
+    getTodos(database)
+  );
 });
 
 app.post('/login', async (request: AppRequest, response: AppResponse) => {
@@ -51,42 +49,36 @@ app.put('/add-task', async (request: AppRequest, response: AppResponse) => {
   const uid = database.auth.currentUser.uid;
   const data = request.body;
 
-  try {
-    await database.ref(`/users-todos/${uid}`).push(data);
-    const snapshot = await getTodos(database);
-
-    response.end(JSON.stringify(mapToItem(snapshot.val())));
-  } catch (error) {
-    console.log(`[ERROR] ${error}`);
-  }
+  this.requestBase(
+    request,
+    response,
+    getTodos(database),
+    database.ref(`/users-todos/${uid}`).push(data),
+  );
 })
 
 app.put('/complete-task', async (request: AppRequest, response: AppResponse) => {
   const uid = database.auth.currentUser.uid;
   const { id, isComplete } = request.body;
 
-  try {
-    await database.ref(`/users-todos/${uid}`).child(id).update({ isComplete });
-    const snapshot = await getTodos(database);
-
-    response.end(JSON.stringify(mapToItem(snapshot.val())));
-  } catch (error) {
-    console.log(`[ERROR] ${error}`);
-  }
+  this.requestBase(
+    request,
+    response,
+    getTodos(database),
+    database.ref(`/users-todos/${uid}`).child(id).update({ isComplete }),
+  );
 })
 
-app.put('/remove-task', async (request: AppRequest, response: AppResponse) => {
+app.put('/remove-task', (request: AppRequest, response: AppResponse) => {
   const uid = database.auth.currentUser.uid;
   const { id } = request.body;
 
-  try {
-    await database.ref(`/users-todos/${uid}`).child(id).remove();
-    const snapshot = await getTodos(database);
-
-    response.end(JSON.stringify(mapToItem(snapshot.val())));
-  } catch (error) {
-    console.log(`[ERROR] ${error}`);
-  }
+  this.requestBase(
+    request,
+    response,
+    getTodos(database),
+    database.ref(`/users-todos/${uid}`).child(id).remove(),
+  );
 })
 
 app.listen(PORT, () => {
