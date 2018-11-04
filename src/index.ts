@@ -70,6 +70,18 @@ app.put('/complete-task', async (request: AppRequest, response: AppResponse) => 
   );
 })
 
+app.put('/description-task', async (request: AppRequest, response: AppResponse) => {
+  const uid = database.auth.currentUser.uid;
+  const { id, description } = request.body;
+
+  requestBase(
+    request,
+    response,
+    getTodos(database),
+    database.ref(`/users-todos/${uid}`).child(id).update({ description }),
+  );
+})
+
 app.put('/remove-task', (request: AppRequest, response: AppResponse) => {
   const uid = database.auth.currentUser.uid;
   const { id } = request.body;
