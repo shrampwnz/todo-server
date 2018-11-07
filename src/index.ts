@@ -46,6 +46,15 @@ app.post('/login', async (request: AppRequest, response: AppResponse) => {
   }
 })
 
+app.post('/logout', async (request: AppRequest, response: AppResponse) => {
+  try {
+    await database.signOut();
+    response.send({ isSuccess: true });
+  } catch (error) {
+    response.send(error);
+  }
+})
+
 app.put('/add-task', async (request: AppRequest, response: AppResponse) => {
   const uid = database.auth.currentUser.uid;
   const data = request.body;

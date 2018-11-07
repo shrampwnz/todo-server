@@ -32,6 +32,10 @@ export class Database {
   public signIn(login: string, password: string): Promise<auth.UserCredential> {
     return auth(this._app).signInWithEmailAndPassword(login, password);
   }
+  
+  public signOut(): Promise<void> {
+    return auth(this._app).signOut();
+  }
 
   private init(): void {
     this._app = initializeApp(this._config)
