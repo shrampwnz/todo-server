@@ -17,7 +17,6 @@
     "event-stream": "^3.3.4",
     "express": "^4.16.4",
     "firebase": "^5.5.5",
-    "flatmap-stream": "0.0.1-security",
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.15",
     "mixin-deep": "^2.0.1",
